@@ -191,6 +191,7 @@ export type Database = {
           description: string | null
           end_date: string | null
           end_time: string
+          generated_until: string | null
           id: string
           interval_days: number | null
           is_demo: boolean
@@ -211,6 +212,7 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           end_time: string
+          generated_until?: string | null
           id?: string
           interval_days?: number | null
           is_demo?: boolean
@@ -231,6 +233,7 @@ export type Database = {
           description?: string | null
           end_date?: string | null
           end_time?: string
+          generated_until?: string | null
           id?: string
           interval_days?: number | null
           is_demo?: boolean
@@ -440,6 +443,7 @@ export type Database = {
     Functions: {
       clear_demo_data: { Args: never; Returns: undefined }
       load_demo_data: { Args: never; Returns: undefined }
+      reset_my_data: { Args: never; Returns: undefined }
       seed_demo_data: { Args: { _uid: string }; Returns: undefined }
     }
     Enums: {
