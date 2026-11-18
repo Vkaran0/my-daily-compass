@@ -15,10 +15,10 @@ export function QuickAdd() {
     openNew({
       title: p.title || v,
       date: p.date ?? todayStr(),
-      start_time: p.start_time,
-      end_time: p.end_time,
-      category: p.category,
-      priority: p.priority,
+      ...(p.start_time ? { start_time: p.start_time } : {}),
+      ...(p.end_time ? { end_time: p.end_time } : {}),
+      ...(p.category ? { category: p.category } : {}),
+      ...(p.priority ? { priority: p.priority } : {}),
     });
     setV("");
   }

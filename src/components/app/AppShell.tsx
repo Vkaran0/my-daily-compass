@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useHasDemo, useProfile } from "@/lib/data";
 import { generateRecurring } from "@/lib/recurrence";
-import { applyTheme, getTheme } from "@/lib/theme";
+import { useAppTheme } from "@/lib/theme";
 import { Logo } from "./Logo";
 import { TaskDialogProvider, useTaskDialog } from "./TaskDialog";
 import { ReminderEngine } from "./ReminderEngine";
@@ -35,6 +35,7 @@ function Shell({ children }: { children: ReactNode }) {
   const { openNew } = useTaskDialog();
   const { data: profile } = useProfile();
   const { data: hasDemo } = useHasDemo();
+  const [theme, setTheme] = useAppTheme();
 
   useEffect(() => {
     supabase.auth.getUser().then(async ({ data }) => {
@@ -51,11 +52,8 @@ function Shell({ children }: { children: ReactNode }) {
     navigate({ to: "/auth", replace: true });
   }
 
-  const toggleTheme = () => {
-    const isDark = document.documentElement.classList.contains("dark");
-    applyTheme(isDark ? "light" : "dark");
-  };
-  void getTheme;
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  const themeAction = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
 
   return (
     <div className="min-h-screen bg-background md:pl-60">
@@ -76,7 +74,7 @@ function Shell({ children }: { children: ReactNode }) {
         <div className="space-y-2 border-t pt-4">
           <div className="truncate px-2 text-sm font-medium">{profile?.display_name ?? "You"}</div>
           <div className="flex gap-1">
-            <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label="Toggle theme">
+            <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={themeAction} title={themeAction}>
               <Sun className="h-4 w-4 dark:hidden" /><Moon className="hidden h-4 w-4 dark:block" />
             </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="gap-2"><LogOut className="h-4 w-4" />Sign out</Button>
@@ -87,7 +85,7 @@ function Shell({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-background/85 px-4 py-3 backdrop-blur md:hidden">
         <Logo />
         <div className="flex gap-1">
-          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label="Toggle theme">
+          <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={themeAction} title={themeAction}>
             <Sun className="h-4 w-4 dark:hidden" /><Moon className="hidden h-4 w-4 dark:block" />
           </Button>
           <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>

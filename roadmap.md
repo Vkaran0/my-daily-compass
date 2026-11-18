@@ -1,0 +1,5 @@
+- [ ] Clear the existing preview type errors so the app opens reliably.
+- [ ] Add selectable daily, weekly, and monthly analytics with comparable task metrics and charts.
+- [ ] Polish Notes with useful search, category/pinned filters, and clearer saved-note controls.
+- [ ] Make light/dark theme selection persist and stay in sync across screens.
+- [ ] Verify the main screens, route metadata, tests, and current preview build.

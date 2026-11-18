@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { useHasDemo, useSettings, useSettingsMutation } from "@/lib/data";
-import { applyTheme } from "@/lib/theme";
+import { useAppTheme } from "@/lib/theme";
 import { Card, PageHeader } from "@/components/app/bits";
 
 export const Route = createFileRoute("/_authenticated/settings")({
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/_authenticated/settings")({
 });
 
 function SettingsPage() {
+  const [theme, setTheme] = useAppTheme();
   const { data: s } = useSettings();
   const save = useSettingsMutation();
   const { data: hasDemo } = useHasDemo();
@@ -43,7 +44,7 @@ function SettingsPage() {
       <PageHeader title="Settings" />
       <Card title="Preferences">
         <div className="space-y-3 text-sm">
-          <Row l="Theme"><select className={sel} onChange={(e) => applyTheme(e.target.value as "light")}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></Row>
+          <Row l="Theme"><select aria-label="Theme" className={sel} value={theme} onChange={(e) => setTheme(e.target.value as "system" | "light" | "dark")}><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></Row>
           <Row l="Browser notifications"><Switch checked={!!s?.notifications_enabled} onCheckedChange={toggleNotif} /></Row>
           <Row l="Default reminder"><select className={sel} value={s?.default_reminder ?? 15} onChange={(e) => save.mutate({ default_reminder: Number(e.target.value) })}>{[5, 10, 15, 30].map((m) => <option key={m} value={m}>{m} min</option>)}</select></Row>
           <Row l="Time format"><select className={sel} value={s?.time_format ?? "12"} onChange={(e) => save.mutate({ time_format: e.target.value })}><option value="12">12-hour</option><option value="24">24-hour</option></select></Row>

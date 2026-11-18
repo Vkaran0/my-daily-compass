@@ -25,7 +25,7 @@ export function NoteDialog({ open, onClose, note, defaults }: { open: boolean; o
   async function submit() {
     if (!f.title.trim()) return setErr("Title is required");
     await save.mutateAsync({
-      id: note?.id,
+      ...(note?.id ? { id: note.id } : {}),
       title: f.title.trim(),
       content: f.content,
       date: f.date,

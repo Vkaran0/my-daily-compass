@@ -18,16 +18,17 @@ import { cn } from "@/lib/utils";
 export type TaskPrefill = Partial<Pick<Task, "title" | "date" | "start_time" | "end_time" | "category" | "priority">>;
 
 type Ctx = { openNew: (p?: TaskPrefill) => void; openTask: (t: Task) => void };
+type TaskDialogState = { open: boolean; task: Task | undefined; prefill: TaskPrefill | undefined; key: number };
 const TaskDialogCtx = createContext<Ctx>({ openNew: () => {}, openTask: () => {} });
 export const useTaskDialog = () => useContext(TaskDialogCtx);
 
 export function TaskDialogProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<{ open: boolean; task?: Task; prefill?: TaskPrefill; key: number }>({ open: false, key: 0 });
+  const [state, setState] = useState<TaskDialogState>({ open: false, task: undefined, prefill: undefined, key: 0 });
   return (
     <TaskDialogCtx.Provider
       value={{
-        openNew: (prefill) => setState((s) => ({ open: true, prefill, key: s.key + 1 })),
-        openTask: (task) => setState((s) => ({ open: true, task, key: s.key + 1 })),
+        openNew: (prefill) => setState((s) => ({ open: true, task: undefined, prefill, key: s.key + 1 })),
+        openTask: (task) => setState((s) => ({ open: true, task, prefill: undefined, key: s.key + 1 })),
       }}
     >
       {children}
@@ -39,7 +40,7 @@ export function TaskDialogProvider({ children }: { children: ReactNode }) {
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const hhmm = (t?: string | null) => (t ? t.slice(0, 5) : "");
 
-function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Task; prefill?: TaskPrefill; onClose: () => void }) {
+function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task: Task | undefined; prefill: TaskPrefill | undefined; onClose: () => void }) {
   const { data: settings } = useSettings();
   const { data: cats } = useCategories();
   const { create, update, remove } = useTaskMutations();
@@ -195,11 +196,11 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
           <DialogTitle>{task ? "Edit task" : "New task"}</DialogTitle>
         </DialogHeader>
         <div className="space-y-4">
-          <Field label="Title" error={errors.title}>
+          <Field label="Title" error={errors["title"]}>
             <Input autoFocus value={f.title} onChange={(e) => set("title", e.target.value)} placeholder="DSA Practice" onKeyDown={(e) => e.key === "Enter" && save()} />
           </Field>
           <div className="grid grid-cols-3 gap-3">
-            <Field label="Date" error={errors.date} className="col-span-3 sm:col-span-1">
+            <Field label="Date" error={errors["date"]} className="col-span-3 sm:col-span-1">
               <Input type="date" value={f.date} onChange={(e) => set("date", e.target.value)} />
             </Field>
             <Field label="Start" className="col-span-3/2 sm:col-span-1">
@@ -209,7 +210,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
               <Input type="time" value={f.end} onChange={(e) => set("end", e.target.value)} />
             </Field>
           </div>
-          {errors.time ? <p className="-mt-2 text-xs text-destructive">{errors.time}</p> : dur > 0 && <p className="-mt-2 text-xs text-muted-foreground">Duration: {fmtDuration(dur)}{f.end < f.start && " (ends next day)"}</p>}
+          {errors["time"] ? <p className="-mt-2 text-xs text-destructive">{errors["time"]}</p> : dur > 0 && <p className="-mt-2 text-xs text-muted-foreground">Duration: {fmtDuration(dur)}{f.end < f.start && " (ends next day)"}</p>}
           <div className="grid grid-cols-2 gap-3">
             <Field label="Category">
               <Select value={f.category} onValueChange={(v) => set("category", v)}>
@@ -229,7 +230,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
             </Field>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Reminder" error={errors.reminder}>
+            <Field label="Reminder" error={errors["reminder"]}>
               <Select value={isPresetReminder ? f.reminder : "custom"} onValueChange={(v) => set("reminder", v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
@@ -248,7 +249,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
 
           {!task && (
             <div className="space-y-3 rounded-xl bg-muted/60 p-3">
-              <Field label="Repeat" error={errors.repeat}>
+              <Field label="Repeat" error={errors["repeat"]}>
                 <Select value={f.repeat} onValueChange={(v) => set("repeat", v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>{REPEAT_OPTIONS.map((o) => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent>
@@ -300,7 +301,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
                     <Field label="Actual start"><Input type="time" value={f.actualStart} onChange={(e) => set("actualStart", e.target.value)} /></Field>
                     <Field label="Actual end"><Input type="time" value={f.actualEnd} onChange={(e) => set("actualEnd", e.target.value)} /></Field>
                   </div>
-                  {errors.actual && <p className="text-xs text-destructive">{errors.actual}</p>}
+                  {errors["actual"] && <p className="text-xs text-destructive">{errors["actual"]}</p>}
                   {f.actualStart && f.actualEnd && dur > 0 && (
                     <p className="text-xs text-muted-foreground">
                       Planned {dur} min · Actual {durationMin(f.actualStart, f.actualEnd)} min · Efficiency{" "}
@@ -341,7 +342,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task?: Ta
   );
 }
 
-function Field({ label, error, children, className }: { label: string; error?: string; children: ReactNode; className?: string }) {
+function Field({ label, error, children, className }: { label: string; error?: string | undefined; children: ReactNode; className?: string | undefined }) {
   return (
     <div className={cn("space-y-1.5", className)}>
       <Label className="text-xs">{label}</Label>
