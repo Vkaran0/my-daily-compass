@@ -24,16 +24,19 @@ export function useAppTheme(): [Theme, (theme: Theme) => void] {
   useEffect(() => {
     const syncTheme = () => setTheme(getTheme());
     const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const syncSystemTheme = () => {
+      if (getTheme() === "system") document.documentElement.classList.toggle("dark", media.matches);
+    };
     window.addEventListener(CHANGE_EVENT, syncTheme);
     window.addEventListener("storage", syncTheme);
-    media.addEventListener("change", syncTheme);
+    media.addEventListener("change", syncSystemTheme);
     applyTheme(getTheme());
     syncTheme();
 
     return () => {
       window.removeEventListener(CHANGE_EVENT, syncTheme);
       window.removeEventListener("storage", syncTheme);
-      media.removeEventListener("change", syncTheme);
+      media.removeEventListener("change", syncSystemTheme);
     };
   }, []);
 

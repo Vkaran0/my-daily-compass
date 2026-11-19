@@ -36,6 +36,16 @@ describe("analytics period windows", () => {
     expect(moveAnalyticsAnchor("2026-03-31", "month", -1)).toBe("2026-02-28");
   });
 
+  it("does not extend a 31-day monthly comparison into the following month", () => {
+    expect(getAnalyticsWindow("2026-03-31", "month")).toMatchObject({
+      currentStart: "2026-03-01",
+      currentEnd: "2026-03-31",
+      previousStart: "2026-02-01",
+      previousEnd: "2026-02-28",
+      days: 31,
+    });
+  });
+
   it("builds comparable completion rates for each elapsed day", () => {
     const window = getAnalyticsWindow("2026-11-18", "week");
     const points = buildPeriodSeries(

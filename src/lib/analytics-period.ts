@@ -28,7 +28,9 @@ export function getAnalyticsWindow(anchor: string, period: AnalyticsPeriod): Ana
 
   const days = Math.max(1, Math.round((date.getTime() - currentStart.getTime()) / 86_400_000) + 1);
   const currentEnd = date;
-  const previousEnd = addDays(previousStart, days - 1);
+  const previousEnd = period === "month"
+    ? new Date(Math.min(addDays(previousStart, days - 1).getTime(), endOfMonth(previousStart).getTime()))
+    : addDays(previousStart, days - 1);
   return {
     currentStart: asDay(currentStart),
     currentEnd: asDay(currentEnd),
@@ -57,9 +59,12 @@ export function buildPeriodSeries(
 ) {
   return Array.from({ length: window.days }, (_, index) => {
     const currentDate = asDay(addDays(asDate(window.currentStart), index));
-    const previousDate = asDay(addDays(asDate(window.previousStart), index));
+    const previousDateValue = addDays(asDate(window.previousStart), index);
+    const previousDate = asDay(previousDateValue);
     const current = currentTasks.filter((task) => task.date === currentDate);
-    const previous = previousTasks.filter((task) => task.date === previousDate);
+    const previous = previousDate <= window.previousEnd
+      ? previousTasks.filter((task) => task.date === previousDate)
+      : [];
     const currentCompleted = current.filter((task) => task.status === "completed").length;
     const previousCompleted = previous.filter((task) => task.status === "completed").length;
 
