@@ -54,64 +54,93 @@ function Shell({ children }: { children: ReactNode }) {
 
   const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
   const themeAction = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+  const ThemeIcon = theme === "dark" ? Sun : Moon;
 
   return (
-    <div className="min-h-screen bg-background md:pl-60">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col border-r bg-sidebar p-4 md:flex">
-        <div className="px-2 py-1"><Logo /></div>
-        <Button className="mt-6 w-full justify-start gap-2" onClick={() => openNew()}>
-          <Plus className="h-4 w-4" /> Add Task
+    <div className="min-h-screen bg-background md:pl-64">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-sidebar-border bg-sidebar px-4 py-5 md:flex">
+        <div className="px-2"><Logo /></div>
+        <Button className="mt-8 h-11 w-full justify-start gap-2 shadow-sm" onClick={() => openNew()}>
+          <Plus className="h-4 w-4" /> New task
         </Button>
-        <nav className="mt-6 flex flex-1 flex-col gap-1">
-          {NAV.map((n) => (
-            <Link key={n.to} to={n.to}
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/75 transition hover:bg-sidebar-accent hover:text-sidebar-foreground"
-              activeProps={{ className: "!bg-sidebar-accent !text-sidebar-accent-foreground" }}>
-              <n.icon className="h-4 w-4" /> {n.label}
+        <p className="mb-2 mt-8 px-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Workspace</p>
+        <nav className="flex flex-1 flex-col gap-1" aria-label="Main navigation">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="flex min-h-10 items-center gap-3 rounded-lg px-3 text-sm font-medium text-sidebar-foreground/75 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
+              activeProps={{ className: "!bg-sidebar-accent !text-sidebar-accent-foreground" }}
+            >
+              <item.icon className="h-4 w-4 shrink-0" />
+              <span className="min-w-0 truncate">{item.label}</span>
             </Link>
           ))}
         </nav>
-        <div className="space-y-2 border-t pt-4">
-          <div className="truncate px-2 text-sm font-medium">{profile?.display_name ?? "You"}</div>
-          <div className="flex gap-1">
-            <Button variant="ghost" size="sm" onClick={toggleTheme} aria-label={themeAction} title={themeAction}>
-              <Sun className="h-4 w-4 dark:hidden" /><Moon className="hidden h-4 w-4 dark:block" />
+        {hasDemo && (
+          <div className="mb-4 rounded-lg border border-highlight/40 bg-highlight/20 p-3 text-xs leading-5 text-highlight-foreground">
+            Sample data is on. <Link to="/settings" className="font-semibold underline">Manage it</Link>
+          </div>
+        )}
+        <div className="border-t border-sidebar-border pt-4">
+          <div className="flex min-w-0 items-center gap-3 px-2">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-sidebar-accent text-sm font-semibold text-sidebar-accent-foreground">
+              {(profile?.display_name ?? "Y").slice(0, 1).toUpperCase()}
+            </div>
+            <span className="min-w-0 flex-1 truncate text-sm font-medium">{profile?.display_name ?? "Your workspace"}</span>
+            <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={themeAction} title={themeAction}>
+              <ThemeIcon className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="sm" onClick={signOut} className="gap-2"><LogOut className="h-4 w-4" />Sign out</Button>
+            <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out" title="Sign out">
+              <LogOut className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </aside>
 
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b bg-background/85 px-4 py-3 backdrop-blur md:hidden">
-        <Logo />
-        <div className="flex gap-1">
+      <header className="sticky top-0 z-20 grid grid-cols-[minmax(0,1fr)_auto] items-center border-b bg-background/90 px-4 py-3 backdrop-blur md:hidden">
+        <div className="min-w-0"><Logo /></div>
+        <div className="flex shrink-0 items-center gap-1">
           <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={themeAction} title={themeAction}>
-            <Sun className="h-4 w-4 dark:hidden" /><Moon className="hidden h-4 w-4 dark:block" />
+            <ThemeIcon className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out"><LogOut className="h-4 w-4" /></Button>
+          <Button asChild variant="ghost" size="icon" aria-label="Settings" title="Settings">
+            <Link to="/settings"><Settings className="h-4 w-4" /></Link>
+          </Button>
+          <Button variant="ghost" size="icon" onClick={signOut} aria-label="Sign out" title="Sign out">
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </header>
 
       {hasDemo && (
-        <div className="border-b bg-highlight/40 px-4 py-2 text-center text-xs text-highlight-foreground">
-          You’re viewing <b>sample data</b> so the charts aren’t empty.{" "}
-          <Link to="/settings" className="font-semibold underline">Remove it in Settings</Link>
+        <div className="border-b bg-highlight/30 px-4 py-2 text-center text-xs text-highlight-foreground md:hidden">
+          Sample data is on · <Link to="/settings" className="font-semibold underline">Manage</Link>
         </div>
       )}
 
-      <main className="mx-auto max-w-6xl px-4 pb-28 pt-6 md:px-8 md:pb-12 md:pt-8">{children}</main>
+      <main className="mx-auto max-w-7xl px-4 pb-32 pt-5 sm:px-6 md:px-8 md:pb-12 md:pt-8">{children}</main>
 
-      <button onClick={() => openNew()} aria-label="Add task"
-        className="fixed bottom-20 right-4 z-30 grid h-14 w-14 place-items-center rounded-full bg-primary text-primary-foreground shadow-lg shadow-primary/30 transition active:scale-95 md:hidden">
-        <Plus className="h-6 w-6" />
-      </button>
+      <Button
+        onClick={() => openNew()}
+        aria-label="Add task"
+        title="Add task"
+        size="icon"
+        className="fixed bottom-[5.25rem] right-4 z-30 h-12 w-12 rounded-full shadow-lg md:hidden"
+      >
+        <Plus className="h-5 w-5" />
+      </Button>
 
-      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-6 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
-        {NAV.map((n) => (
-          <Link key={n.to} to={n.to} className="flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium text-muted-foreground"
-            activeProps={{ className: "!text-primary" }}>
-            <n.icon className="h-5 w-5" />
-            {n.label}
+      <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden" aria-label="Mobile navigation">
+        {NAV.filter((item) => item.to !== "/settings").map((item) => (
+          <Link
+            key={item.to}
+            to={item.to}
+            className="flex min-w-0 flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium text-muted-foreground transition-colors"
+            activeProps={{ className: "!text-primary" }}
+          >
+            <item.icon className="h-5 w-5 shrink-0" />
+            <span className="max-w-full truncate">{item.label}</span>
           </Link>
         ))}
       </nav>

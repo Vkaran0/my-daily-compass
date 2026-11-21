@@ -1,5 +1,8 @@
-- [ ] Clear the existing preview type errors so the app opens reliably.
-- [ ] Add selectable daily, weekly, and monthly analytics with comparable task metrics and charts.
-- [ ] Polish Notes with useful search, category/pinned filters, and clearer saved-note controls.
-- [ ] Make light/dark theme selection persist and stay in sync across screens.
+- [x] Clear the existing preview type errors so the app opens reliably.
+- [x] Add selectable daily, weekly, and monthly analytics with comparable task metrics and charts.
+- [x] Polish Notes with useful search, category/pinned filters, and clearer saved-note controls.
+- [x] Make light/dark theme selection persist and stay in sync across screens.
+- [ ] Refresh the app shell and core pages with a polished, responsive visual system.
+- [ ] Add an interactive focus-session timer to the dashboard.
+- [ ] Improve task and calendar controls for small screens and everyday use.
 - [ ] Verify the main screens, route metadata, tests, and current preview build.

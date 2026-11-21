@@ -74,13 +74,13 @@ export function ProgressRing({ value, size = 140, stroke = 12, label }: { value:
 export function StatCard({ label, value, sub, icon: Icon, tone }: { label: string; value: ReactNode; sub?: ReactNode; icon?: LucideIcon; tone?: "success" | "destructive" | "warning" | "info" }) {
   const toneCls = tone ? { success: "text-success", destructive: "text-destructive", warning: "text-warning", info: "text-info" }[tone] : "text-muted-foreground";
   return (
-    <div className="rounded-xl border bg-card p-4">
+    <div className="min-w-0 rounded-lg border bg-card p-3.5 transition-colors hover:border-primary/30 sm:p-4">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">{label}</span>
+        <span className="min-w-0 truncate text-xs font-medium text-muted-foreground">{label}</span>
         {Icon && <Icon className={cn("h-4 w-4", toneCls)} />}
       </div>
-      <div className="mt-2 font-display text-2xl font-semibold tabular">{value}</div>
-      {sub && <div className="mt-0.5 text-xs text-muted-foreground">{sub}</div>}
+      <div className="mt-2 truncate font-display text-xl font-semibold tabular sm:text-2xl">{value}</div>
+      {sub && <div className="mt-1 line-clamp-2 text-xs leading-5 text-muted-foreground">{sub}</div>}
     </div>
   );
 }
@@ -100,11 +100,11 @@ export function EmptyState({ icon: Icon, title, desc, action }: { icon: LucideIc
 
 export function Card({ title, action, children, className }: { title?: ReactNode; action?: ReactNode; children: ReactNode; className?: string }) {
   return (
-    <section className={cn("rounded-2xl border bg-card p-4 md:p-5", className)}>
+    <section className={cn("min-w-0 rounded-lg border bg-card p-4 sm:p-5", className)}>
       {(title || action) && (
-        <div className="mb-4 flex items-center justify-between gap-2">
-          {title && <h2 className="text-base font-semibold">{title}</h2>}
-          {action}
+        <div className="mb-4 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3">
+          {title && <h2 className="min-w-0 truncate text-base font-semibold">{title}</h2>}
+          {action && <div className="shrink-0">{action}</div>}
         </div>
       )}
       {children}
@@ -114,12 +114,12 @@ export function Card({ title, action, children, className }: { title?: ReactNode
 
 export function PageHeader({ title, sub, actions }: { title: string; sub?: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 className="text-2xl font-semibold md:text-3xl">{title}</h1>
-        {sub && <p className="mt-1 text-sm text-muted-foreground">{sub}</p>}
+    <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-end gap-3 sm:flex sm:flex-wrap sm:justify-between">
+      <div className="min-w-0">
+        <h1 className="break-words text-2xl font-semibold sm:text-3xl">{title}</h1>
+        {sub && <p className="mt-1 text-sm leading-6 text-muted-foreground">{sub}</p>}
       </div>
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+      {actions && <div className="flex shrink-0 flex-wrap justify-end gap-2">{actions}</div>}
     </div>
   );
 }
