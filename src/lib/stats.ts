@@ -156,10 +156,12 @@ export function dailyInsight(tasks: Task[]): string | null {
   if (done.length < 2) return null;
   const cats = categoryStats(done);
   const top = cats[0];
+  if (!top) return null;
   const missed = done.filter((t) => displayStatus(t, now) === "missed");
   let msg = `You completed ${Math.round(top.rate)}% of your ${top.category} tasks today`;
-  if (missed.length) {
-    const cat = missed[0].category;
+  const firstMissed = missed[0];
+  if (firstMissed) {
+    const cat = firstMissed.category;
     msg += `, but missed ${missed.length === 1 ? "one" : missed.length} ${missed.length === 1 ? `${cat} session` : "sessions"}.`;
   } else msg += " and missed nothing so far. 🎯";
   return msg;

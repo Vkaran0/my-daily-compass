@@ -9,7 +9,7 @@ import { useAppTheme } from "@/lib/theme";
 import { Card, PageHeader } from "@/components/app/bits";
 
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Settings — Cadence" }, { name: "description", content: "Preferences and data." }, { property: "og:title", content: "Settings — Cadence" }, { property: "og:description", content: "Preferences and data." }] }),
+  head: () => ({ meta: [{ title: "Settings — Cadence" }, { name: "description", content: "Preferences and data." }, { property: "og:title", content: "Settings — Cadence" }, { property: "og:description", content: "Preferences and data." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: SettingsPage,
 });
 
@@ -31,7 +31,7 @@ function SettingsPage() {
   async function rpc(fn: "clear_demo_data" | "load_demo_data" | "reset_my_data", msg: string) {
     if (fn !== "load_demo_data" && !window.confirm("Are you sure? This cannot be undone.")) return;
     const { error } = await supabase.rpc(fn);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     qc.invalidateQueries(); toast.success(msg);
   }
   async function exportData() {

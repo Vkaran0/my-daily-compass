@@ -9,7 +9,7 @@ import { TaskItem } from "@/components/app/TaskItem";
 import { QuickAdd } from "@/components/app/QuickAdd";
 
 export const Route = createFileRoute("/_authenticated/tasks")({
-  head: () => ({ meta: [{ title: "Tasks — Cadence" }, { name: "description", content: "Search, filter and manage tasks." }, { property: "og:title", content: "Tasks — Cadence" }, { property: "og:description", content: "Search, filter and manage tasks." }] }),
+  head: () => ({ meta: [{ title: "Tasks — Cadence" }, { name: "description", content: "Search, filter and manage tasks." }, { property: "og:title", content: "Tasks — Cadence" }, { property: "og:description", content: "Search, filter and manage tasks." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Tasks,
 });
 

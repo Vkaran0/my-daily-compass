@@ -10,7 +10,7 @@ import { TaskItem } from "@/components/app/TaskItem";
 import { QuickAdd } from "@/components/app/QuickAdd";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Cadence" }, { name: "description", content: "Today's progress at a glance." }, { property: "og:title", content: "Dashboard — Cadence" }, { property: "og:description", content: "Today's progress at a glance." }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Cadence" }, { name: "description", content: "Today's progress at a glance." }, { property: "og:title", content: "Dashboard — Cadence" }, { property: "og:description", content: "Today's progress at a glance." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Dashboard,
 });
 

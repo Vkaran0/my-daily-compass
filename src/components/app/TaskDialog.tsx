@@ -87,15 +87,15 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task: Tas
 
   function validate() {
     const e: Record<string, string> = {};
-    if (!f.title.trim()) e.title = "Title is required";
-    if (f.title.length > 120) e.title = "Keep it under 120 characters";
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(f.date) || isNaN(Date.parse(f.date))) e.date = "Pick a valid date";
-    if (!f.start || !f.end) e.time = "Start and end time are required";
-    else if (f.start === f.end) e.time = "End time must differ from start time";
-    if (f.reminder === "custom" && !(Number(f.customReminder) > 0 && Number(f.customReminder) <= 1440)) e.reminder = "Enter 1–1440 minutes";
-    if (f.repeat === "specific" && f.days.length === 0) e.repeat = "Pick at least one day";
-    if (f.repeat === "custom" && !(Number(f.interval) >= 1)) e.repeat = "Interval must be 1 or more";
-    if (f.status === "completed" && ((f.actualStart && !f.actualEnd) || (!f.actualStart && f.actualEnd))) e.actual = "Enter both actual times";
+    if (!f.title.trim()) e["title"] = "Title is required";
+    if (f.title.length > 120) e["title"] = "Keep it under 120 characters";
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(f.date) || isNaN(Date.parse(f.date))) e["date"] = "Pick a valid date";
+    if (!f.start || !f.end) e["time"] = "Start and end time are required";
+    else if (f.start === f.end) e["time"] = "End time must differ from start time";
+    if (f.reminder === "custom" && !(Number(f.customReminder) > 0 && Number(f.customReminder) <= 1440)) e["reminder"] = "Enter 1–1440 minutes";
+    if (f.repeat === "specific" && f.days.length === 0) e["repeat"] = "Pick at least one day";
+    if (f.repeat === "custom" && !(Number(f.interval) >= 1)) e["repeat"] = "Interval must be 1 or more";
+    if (f.status === "completed" && ((f.actualStart && !f.actualEnd) || (!f.actualStart && f.actualEnd))) e["actual"] = "Enter both actual times";
     setErrors(e);
     return Object.keys(e).length === 0;
   }
@@ -148,7 +148,7 @@ function TaskDialog({ open, task, prefill, onClose }: { open: boolean; task: Tas
           });
         }
         if (f.applyToSeries && task.recurring_id) {
-          const { date: _d, ...ruleFields } = base;
+          const { date: _d, notes: _notes, ...ruleFields } = base;
           await supabase.from("recurring_tasks").update(ruleFields).eq("id", task.recurring_id);
           await regenerateRule(task.user_id, task.recurring_id);
           qc.invalidateQueries({ queryKey: ["recurring"] });

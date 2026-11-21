@@ -12,6 +12,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A productivity tracker for students with strict routines: tasks, reminders, notes and analytics." },
       { property: "og:title", content: "Cadence — Your daily schedule, tracked honestly" },
       { property: "og:description", content: "Tasks, recurring routines, reminders and daily-to-yearly analytics in one place." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,

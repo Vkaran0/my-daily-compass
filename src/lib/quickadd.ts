@@ -15,7 +15,7 @@ const DAYS = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", 
 
 function parseTime(s: string): number | null {
   const m = s.trim().toLowerCase().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
-  if (!m) return null;
+  if (!m || m[1] === undefined) return null;
   let h = Number(m[1]);
   const min = Number(m[2] ?? 0);
   if (h > 23 || min > 59) return null;
@@ -27,7 +27,7 @@ function parseTime(s: string): number | null {
 
 function parseDuration(s: string): number | null {
   const m = s.trim().toLowerCase().match(/^(\d+(?:\.\d+)?)\s*(h|hr|hrs|hour|hours|m|min|mins|minute|minutes)$/);
-  if (!m) return null;
+  if (!m || m[1] === undefined || m[2] === undefined) return null;
   const n = Number(m[1]);
   return m[2].startsWith("h") ? Math.round(n * 60) : Math.round(n);
 }
@@ -59,9 +59,11 @@ export function parseQuickAdd(input: string): QuickParse {
   const titleParts: string[] = [];
   for (const p of parts) {
     const range = p.match(/^(.+?)\s+(?:to|until)\s+(.+)$/i);
-    if (range && parseTime(range[1]) != null && parseTime(range[2]) != null) {
-      start = parseTime(range[1]);
-      end = parseTime(range[2]);
+    const rangeStart = range?.[1];
+    const rangeEnd = range?.[2];
+    if (rangeStart && rangeEnd && parseTime(rangeStart) != null && parseTime(rangeEnd) != null) {
+      start = parseTime(rangeStart);
+      end = parseTime(rangeEnd);
       continue;
     }
     const t = parseTime(p);
@@ -104,7 +106,8 @@ export function parseQuickAdd(input: string): QuickParse {
       [/project/, "Projects"],
       [/study|class|lecture|exam|college|revision|academic/, "Academics"],
     ];
-    out.category = guess.find(([r]) => r.test(lt))?.[1];
+    const inferredCategory = guess.find(([r]) => r.test(lt))?.[1];
+    if (inferredCategory) out.category = inferredCategory;
   }
   if (start != null) {
     out.start_time = fromMin(start);

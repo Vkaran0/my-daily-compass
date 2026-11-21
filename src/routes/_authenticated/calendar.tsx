@@ -9,14 +9,16 @@ import { useTaskDialog } from "@/components/app/TaskDialog";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/calendar")({
-  head: () => ({ meta: [{ title: "Calendar — Cadence" }, { name: "description", content: "Your tasks on a calendar." }, { property: "og:title", content: "Calendar — Cadence" }, { property: "og:description", content: "Your tasks on a calendar." }] }),
+  head: () => ({ meta: [{ title: "Calendar — Cadence" }, { name: "description", content: "Your tasks on a calendar." }, { property: "og:title", content: "Calendar — Cadence" }, { property: "og:description", content: "Your tasks on a calendar." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary_large_image" }] }),
   component: Cal,
 });
 
 function Cal() {
   const [m, setM] = useState(new Date());
   const days = eachDayOfInterval({ start: startOfWeek(startOfMonth(m), { weekStartsOn: 1 }), end: endOfWeek(endOfMonth(m), { weekStartsOn: 1 }) });
-  const { data } = useTasks(ymd(days[0]), ymd(days[days.length - 1]));
+  const firstDay = days[0] ?? m;
+  const lastDay = days.at(-1) ?? m;
+  const { data } = useTasks(ymd(firstDay), ymd(lastDay));
   const { openTask } = useTaskDialog();
   const tone = { completed: "bg-success/15 text-success", missed: "bg-destructive/15 text-destructive", skipped: "bg-warning/15 text-warning", upcoming: "bg-muted", in_progress: "bg-info/15 text-info" };
   return (

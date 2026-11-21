@@ -3,7 +3,9 @@ import type { Task, DisplayStatus } from "./types";
 
 export const toMin = (t: string | null | undefined) => {
   if (!t) return 0;
-  const [h, m] = t.split(":").map(Number);
+  const parts = t.split(":");
+  const h = Number(parts[0] ?? 0);
+  const m = Number(parts[1] ?? 0);
   return h * 60 + (m || 0);
 };
 

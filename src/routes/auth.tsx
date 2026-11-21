@@ -15,6 +15,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Sign in or create your Cadence account." },
       { property: "og:title", content: "Sign in — Cadence" },
       { property: "og:description", content: "Sign in or create your Cadence account." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -43,8 +45,8 @@ function AuthPage() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email)) return toast.error("Enter a valid email address");
-    if (mode !== "forgot" && password.length < 6) return toast.error("Password must be at least 6 characters");
+    if (!/^\S+@\S+\.\S+$/.test(email)) { toast.error("Enter a valid email address"); return; }
+    if (mode !== "forgot" && password.length < 6) { toast.error("Password must be at least 6 characters"); return; }
     setBusy(true);
     try {
       if (mode === "signin") {

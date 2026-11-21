@@ -79,11 +79,11 @@ function Notes() {
                 <span className="inline-flex items-center gap-1.5"><CalendarDays className="h-3.5 w-3.5" />{format(parseISO(note.date), "MMM d, yyyy")}</span>
                 {note.category && <span className="inline-flex items-center gap-1.5"><StickyNote className="h-3.5 w-3.5" />{note.category}</span>}
               </div>
-            </div>
+            </article>
           ))}
         </div>
       ) : <EmptyState icon={StickyNote} title={q || pinnedOnly || category !== "all" ? "No notes match these filters." : "No notes yet. Create your first note."} desc={q || pinnedOnly || category !== "all" ? "Try another search or clear a filter." : "Keep revision points, ideas, and task reflections together."} action={q || pinnedOnly || category !== "all" ? <Button variant="outline" onClick={() => { setQ(""); setCategory("all"); setPinnedOnly(false); }}>Clear filters</Button> : <Button onClick={() => setEdit((entry) => ({ open: true, k: entry.k + 1 }))}><FileText className="mr-2 h-4 w-4" />Write a note</Button>} />}
-      {edit.open && <NoteDialog key={edit.k} open note={edit.note} onClose={() => setEdit((e) => ({ ...e, open: false }))} />}
+      {edit.open && <NoteDialog key={edit.k} open note={edit.note ?? null} onClose={() => setEdit((e) => ({ ...e, open: false }))} />}
     </div>
   );
 }
